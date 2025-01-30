@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedTyper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SpeedTyper</h1>
+        <p class="instruction">Type the sentence below correctly as fast as you can!</p>
+        
+        <div class="text-box">
+            <p id="sentence">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+        </div>
+
+        <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
+
+        <div class="stats">
+            <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
+            <p>🏆 Best Time: <span id="best-time">--</span></p>
+        </div>
+
+        <button id="start-btn">Start Over</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
