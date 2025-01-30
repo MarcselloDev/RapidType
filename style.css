@@ -88,3 +88,14 @@ button:hover {
   user-select: none;
 }
 
+@media (max-width: 1200px) {
+  html{
+    scale: 0.75;
+  }
+}
+
+@media (max-width: 800px) {
+  html{
+    scale: 0.5;
+  }
+}
