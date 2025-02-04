@@ -3,10 +3,17 @@ let isTyping = false
 let timer
 let text
 let difficulty = localStorage.getItem('difficulty') || 'Normal'
-let html = ''
+let gameMode
+let generateModes = {
+  Timed: generateTimed,
+  WPM: generateWPM,
+  Challenge: generateChallange,
+  Practice: generatePractice
+}
 
 function generateTimed() {
-  html += 
+  let html = ''
+  html = 
   `
   <h1>RapidType</h1>
         <p class="instruction">Type the sentence(s) below correctly as fast as you can!</p>
@@ -25,6 +32,7 @@ function generateTimed() {
 
         <button id="start-btn">Start Over</button>
 
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select class="difficulty">
             <option value="Easy">Easy</option>
@@ -32,28 +40,96 @@ function generateTimed() {
             <option value="Hard">Hard</option>
             </select>
         </div>
+
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select id="game-mode">
+            <option value="Timed" selected>Timed</option>
+            <option value="WPM">WPM (Coming soon)</option>
+            <option value="Challenge">Challenge (Coming soon)</option>
+            <option value="Practice">Practice</option>
+            </select>
+        </div>
+        </div>
   `
   document.querySelector('.container').innerHTML = html
 
   if (difficulty) {
-    document.querySelector('.difficulty').value = difficulty;
+    document.querySelector('.difficulty').value = difficulty
   }
 
   addDifficultyListener()
+  addGamemodeListener()
+  addTypingListener()
+  loadDifficulty()
+  addRestartListener()
 }
-generateTimed()
 
 function generateWPM() {
   
 }
 
-function generateChallanges() {
+function generateChallange() {
   
 }
 
 function generatePractice() {
-  
+  let html = ''
+  html = 
+  `
+  <h1>RapidType</h1>
+        <p class="instruction">Type the sentence(s) below correctly as fast as you can!</p>
+        
+        <div class="text-box">
+            <p id="sentence"></p>
+        </div>
+
+        <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
+
+        <div class="stats">
+        <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
+            <p>Difficulty: <span id="difficulty"></span></p>
+        </div>
+
+        <button id="start-btn">Start Over</button>
+
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select class="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Normal" selected>Normal</option>
+            <option value="Hard">Hard</option>
+            </select>
+        </div>
+
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select id="game-mode">
+            <option value="Timed">Timed</option>
+            <option value="WPM">WPM (Coming soon)</option>
+            <option value="Challenge">Challenge (Coming soon)</option>
+            <option value="Practice" selected>Practice</option>
+            </select>
+        </div>
+        </div>
+  `
+  document.querySelector('.container').innerHTML = html
+
+  if (difficulty) {
+    document.querySelector('.difficulty').value = difficulty
+  }
+
+  addDifficultyListener()
+  addGamemodeListener()
+  addTypingListener()
+  loadDifficulty()
+  addRestartListener()
 }
+
+function generateGameMode() {
+  gameMode = localStorage.getItem('gameMode') || 'Timed'
+  generateModes[gameMode]()
+}
+
+generateGameMode()
 
 document.getElementById('user-input').addEventListener('paste', (e) => {
   e.preventDefault();
@@ -63,11 +139,29 @@ document.getElementById('difficulty').textContent = difficulty
 
 function addDifficultyListener() {
   document.querySelector('.difficulty').addEventListener('change', (event) => {
-      difficulty = event.target.value;
-      document.getElementById('difficulty').textContent = difficulty;
-      localStorage.setItem('difficulty', difficulty);
-      restartTimer();
-      getBestTime();
+      difficulty = event.target.value
+      document.getElementById('difficulty').textContent = difficulty
+      localStorage.setItem('difficulty', difficulty)
+      restartTimer()
+      getBestTime()
+  });
+}
+
+
+
+function addGamemodeListener() {
+  document.querySelector('#game-mode').addEventListener('change', (event) => {
+      gameMode = event.target.value
+      console.log("Game mode selected:", gameMode)
+      
+      if (generateModes[gameMode]) {
+        generateModes[gameMode]()
+      } else {
+        console.error("No generation function for game mode:", gameMode)
+      }
+      localStorage.setItem('gameMode', gameMode)
+      restartTimer()
+      getBestTime()
   });
 }
 
@@ -162,7 +256,7 @@ function generateText() {
 }
 generateText()
 
-
+function addTypingListener() {
 document.getElementById('user-input').addEventListener('input', () => {
   text = document.getElementById('sentence').textContent
   userInput = document.querySelector('#user-input').value
@@ -176,6 +270,7 @@ document.getElementById('user-input').addEventListener('input', () => {
   }
   
 })
+}
 
 let seconds
 let stopwatch
@@ -218,20 +313,31 @@ function restartTimer() {
   generateText()
   }
 
+function addRestartListener() {
 document.querySelector('#start-btn').addEventListener('click', () => {
   restartTimer()
 })
+}
 
 function setBestTime() {
-  localStorage.setItem(difficulty + 'BestTime', bestTimes[difficulty]);
+  if (gameMode === 'Practice'){
+    return
+  } else {
+    localStorage.setItem(difficulty + 'BestTime', bestTimes[difficulty])
+  }
 }
+
 
 function getBestTime() {
   let bestTime = localStorage.getItem(difficulty + 'BestTime');
+  if (gameMode === 'Timed')
   document.querySelector('#best-time').innerHTML = (bestTime/100).toFixed(2)
 }
 getBestTime()
 
 function resetUserInput() {
   document.querySelector('#user-input').value = ''
+}
+function loadDifficulty() {
+  document.getElementById('difficulty').textContent = difficulty
 }
