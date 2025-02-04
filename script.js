@@ -3,6 +3,57 @@ let isTyping = false
 let timer
 let text
 let difficulty = localStorage.getItem('difficulty') || 'Normal'
+let html = ''
+
+function generateTimed() {
+  html += 
+  `
+  <h1>RapidType</h1>
+        <p class="instruction">Type the sentence(s) below correctly as fast as you can!</p>
+        
+        <div class="text-box">
+            <p id="sentence"></p>
+        </div>
+
+        <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
+
+        <div class="stats">
+            <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
+            <p>🏆 Best Time: <span id="best-time">--</span> seconds</p>
+            <p>Difficulty: <span id="difficulty"></span></p>
+        </div>
+
+        <button id="start-btn">Start Over</button>
+
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select class="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Normal" selected>Normal</option>
+            <option value="Hard">Hard</option>
+            </select>
+        </div>
+  `
+  document.querySelector('.container').innerHTML = html
+
+  if (difficulty) {
+    document.querySelector('.difficulty').value = difficulty;
+  }
+
+  addDifficultyListener()
+}
+generateTimed()
+
+function generateWPM() {
+  
+}
+
+function generateChallanges() {
+  
+}
+
+function generatePractice() {
+  
+}
 
 document.getElementById('user-input').addEventListener('paste', (e) => {
   e.preventDefault();
@@ -10,93 +61,97 @@ document.getElementById('user-input').addEventListener('paste', (e) => {
 
 document.getElementById('difficulty').textContent = difficulty
 
-document.querySelectorAll('.difficulty').forEach(radio => {
-  radio.addEventListener('change', () => {
-      difficulty = document.querySelector('input[name="difficulty"]:checked').value
-      document.getElementById('difficulty').textContent = difficulty
-      localStorage.setItem('difficulty', difficulty)
-      restartTimer()
-      getBestTime()
-  })
-})
-
-if (difficulty) {
-  document.querySelector(`input[name="difficulty"][value="${difficulty}"]`).checked = true
-} else {
-  document.querySelector('input[name="difficulty"][value="Normal"]').checked = true
+function addDifficultyListener() {
+  document.querySelector('.difficulty').addEventListener('change', (event) => {
+      difficulty = event.target.value;
+      document.getElementById('difficulty').textContent = difficulty;
+      localStorage.setItem('difficulty', difficulty);
+      restartTimer();
+      getBestTime();
+  });
 }
 
 
 let sentences = {
   Easy:[
-    "The toaster suddenly burst into flames.",
-    "A pigeon stole my sandwich at the park.",
-    "He accidentally bought 500 bananas online.",
-    "The robot vacuum escaped through the back door.",
-    "She found a sock in the fridge for no reason.",
-    "A goat was standing on top of a car downtown.",
-    "The vending machine refused to take my money.",
-    "He tripped over absolutely nothing and fell.",
-    "A potato rolled off the table dramatically.",
-    "The streetlight flickered exactly three times.",
-    "The cat wore a tiny hat and danced on the table.",
-    "The sun decided to take a nap behind the clouds.",
-    "My coffee spilled all over the keyboard, again.",
-    "The library had a secret room no one knew about.",
-    "The pizza delivery guy arrived on a skateboard.",
-    "The dog wore sunglasses and drove a car.",
-    "The elevator started going sideways for no reason.",
-    "A dragonfly flew past wearing a tiny cape.",
-    "The bicycle decided it wanted to go swimming.",
-    "The alarm clock ran away to join a circus.",
+    "The cat sits on the warm sunny roof",
+    "A bird flies high above the blue ocean",
+    "She likes to read books in the quiet library",
+    "The dog runs across the green grassy field",
+    "He drinks cold water on a hot summer day",
+    "They play soccer in the park every weekend",
+    "The sun rises over the tall mountain peaks",
+    "A rabbit hops quickly through the small garden",
+    "She listens to music while walking to school",
+    "He draws pictures with bright colorful crayons",
+    "The wind blows leaves across the empty street",
+    "They build sandcastles at the sandy beach",
+    "A fish swims slowly in the clear blue lake",
+    "She picks apples from the tall apple tree",
+    "The stars shine brightly in the night sky",
+    "He rides his bike along the narrow road",
+    "A butterfly lands softly on a yellow flower",
+    "They eat ice cream on a hot summer afternoon",
+    "The train moves fast across the long bridge",
+    "She watches cartoons in the cozy living room",
+    "A squirrel climbs quickly up the big oak tree",
+    "He writes a letter to his best friend today",
+    "The clouds drift slowly across the open sky",
+    "They jump into the cool refreshing swimming pool",
+    "She helps her mother bake a chocolate cake"
   ],
   Normal: [
-    "The toaster suddenly burst into flames. I guess it really wanted to make toast.",
-    "The robot vacuum escaped through the back door. Last seen rolling towards the highway.",
-    "She found a sock in the fridge for no reason. It was cold, but still had no explanation.",
-    "A goat was standing on top of a car downtown. Nobody seemed to find this unusual.",
-    "The vending machine refused to take my money. It just stared at me with pure disrespect.",
-    "He tripped over absolutely nothing and fell. Gravity just wanted to remind him who's boss.",
-    "A potato rolled off the table dramatically. It was a very unnecessary slow-motion moment.",
-    "The streetlight flickered exactly three times. Then I heard a whisper behind me.",
-    "The cat wore a tiny hat and danced on the table. Clearly, it was the star of the party.",
-    "The sun decided to take a nap behind the clouds. Unfortunately, my beach plans did not survive.",
-    "My coffee spilled all over the keyboard, again. The universe clearly wants me to stop working.",
-    "The library had a secret room no one knew about. Until a book fell and revealed a hidden door.",
-    "The dog wore sunglasses and drove a car. The police officer just gave him a nod of approval.",
-    "A dragonfly flew past wearing a tiny cape. I can only assume it’s the superhero of insects.",
-    "The bicycle decided it wanted to go swimming. It was last seen sinking into the lake.",
-    "The alarm clock ran away to join a circus. I can’t even be mad, it deserves a better life.",
-    "A squirrel stole my car keys. Now it’s probably joyriding through the neighborhood.",
-    "The TV turned on by itself at 3 AM. It was just playing a cooking show on repeat.",
-    "My phone auto-corrected 'hello' to 'help'. Now my friend thinks I’m in serious danger.",
-    "A seagull swooped down and stole my fries. It didn’t even share with its friends."
+    "The boy walks to school every morning. He enjoys the fresh air and the sound of birds singing.",
+    "She writes in her journal before bed. It helps her remember important moments from her day.",
+    "The car stopped at the red light. The driver waited patiently for the signal to turn green.",
+    "They built a treehouse in their backyard. It became their favorite place to play and read books.",
+    "The sun set behind the mountains. The sky turned shades of orange, pink, and purple.",
+    "He bought a new pair of shoes. They were comfortable and perfect for running.",
+    "A dog barked loudly at the stranger. The owner quickly calmed it down with a gentle voice.",
+    "She made a cup of tea. The warm drink helped her relax after a long day.",
+    "They planted flowers in the garden. Soon, colorful petals bloomed all around them.",
+    "The rain poured heavily all afternoon. People hurried to find shelter under buildings.",
+    "He watched a movie on his laptop. The story was exciting and full of surprises.",
+    "A bird built a nest in the tree. It carefully placed each twig in the perfect spot.",
+    "The bus arrived at the station on time. Passengers quickly stepped inside and found seats.",
+    "She wore a warm coat in winter. The cold wind made her glad she dressed warmly.",
+    "They played chess in the park. The game was challenging, but they had fun.",
+    "The chef cooked a delicious meal. The smell filled the entire kitchen with warmth.",
+    "She bought a new book to read. The story was interesting and full of adventure.",
+    "The waves crashed against the shore. Seagulls flew above, searching for food.",
+    "He practiced playing the guitar. His skills improved with each passing day.",
+    "They hiked up the steep hill. The view from the top was worth the effort.",
+    "A cat slept on the sunny windowsill. Its fur looked warm and soft in the sunlight.",
+    "She painted a beautiful landscape. The colors blended perfectly on the canvas.",
+    "The children laughed at a funny joke. Their giggles filled the entire room.",
+    "He saved money for a new phone. After months of waiting, he finally bought it.",
+    "They watched the stars at night. The sky looked endless and full of wonder."
   ],
   Hard: [
-    "The toaster suddenly burst into flames, turning my breakfast into chaos. The fire alarm screamed while I panicked. My cat just watched, unimpressed. I unplugged it, but my toast was now charcoal. Great start to the morning.",
-    "A pigeon stole my sandwich at the park, nodding smugly before flying away. A second pigeon landed, staring me down. They planned this. Defeated, I left hungry. Somewhere, a pigeon feast was happening at my expense.",
-    "He accidentally bought 500 bananas online and now his kitchen is a jungle. Smoothies? Banana bread? No. Just panic. Fruit flies arrived like an army. He surrendered to the chaos. The bananas had officially taken over.",
-    "The robot vacuum escaped through the back door, rolling towards freedom. It beeped once, as if saying farewell. I chased it but tripped. By the time I got up, it was gone. It’s probably happier now.",
-    "She found a sock in the fridge and nobody knew why. Nobody claimed it. The mystery grew. The sock stayed there for weeks, untouched. Eventually, we accepted it. The fridge sock had become a household legend.",
-    "A goat was standing on top of a car downtown, completely unbothered. People took pictures. It made direct eye contact with me, like it knew something. Then it left. I’m still thinking about that goat today.",
-    "The vending machine refused my money, staring at me with pure disrespect. I tried again. It ate my coin but gave nothing back. I kicked it. It beeped mockingly. I left snackless, defeated by a machine.",
-    "He tripped over absolutely nothing and fell. Gravity just personally attacked him. A group of pigeons silently judged. He stood up, pretending it didn’t happen. We all saw. The pigeons definitely saw. His dignity didn’t survive.",
-    "A potato rolled off the table, landing dramatically. It was slow motion. The dog grabbed it and ran. It was his now. I considered chasing him, but honestly, he deserved it. The potato belonged to him.",
-    "The streetlight flickered exactly three times, then everything went dark. Silence. My phone died. A breeze whispered my name. I remembered every horror movie ever. I walked home faster than I’ve ever moved in my life.",
-    "The cat wore a tiny hat and danced on the table, fully committing. The dog tried to join but caused chaos. The table collapsed. The party stopped. The cat simply walked away. Pure confidence. Zero regrets.",
-    "The sun decided to take a nap behind the clouds, ruining my beach day. My sunglasses became useless. A seagull laughed at me, or at least it felt that way. I left, defeated. The ocean remained unimpressed.",
-    "My coffee spilled all over the keyboard, again. The universe clearly wants me to stop working. The computer beeped in sadness. I sighed. Maybe this is fate. I took a deep breath and grabbed more coffee.",
-    "The library had a secret room nobody knew about. A book triggered the door. Naturally, I entered without thinking. Inside, there was a single flickering light. I am now trapped in a haunted library forever. Oops.",
-    "The pizza delivery guy arrived on a skateboard, flipping it before handing me the box. Honestly, I was too impressed to complain about the late delivery. The pizza was cold, but my admiration for him was warm.",
-    "The dog wore sunglasses and drove a car past me. Nobody seemed surprised. A cop nodded at him. I started questioning reality. Maybe I should let my cat get a driver’s license. It seems normal here.",
-    "The elevator started going sideways for no reason, confusing everyone. Someone sipped their coffee like this was normal. I panicked internally. The doors opened to the same floor. We all left, pretending nothing happened. I need answers.",
-    "A dragonfly flew past wearing a tiny cape, looking majestic. It hovered mid-air, observing me. I nodded respectfully. It nodded back. Then it vanished into the sky. Somewhere, a mosquito is trembling in fear. Incredible creature.",
-    "The bicycle decided it wanted to go swimming, rolling straight into the lake. A duck seemed genuinely confused. I just stood there, watching the absurdity unfold. It sank. I left, questioning my life choices. Strange day.",
-    "The alarm clock ran away to join a circus, leaving me oversleeping. Can’t even be mad, honestly. It deserves a better life. Now, it’s probably performing for crowds while I struggle to wake up on time.",
-    "A squirrel stole my car keys, vanishing into the trees. Now I imagine it joyriding through town. I hope it knows traffic laws. My insurance won’t believe this. Honestly, I don’t believe it either. Absolute chaos.",
-    "The TV turned on by itself at 3 AM, playing a cooking show. Now I suddenly crave cake. I don’t have ingredients. I’m haunted and hungry. Ghosts really need to be more considerate with their timing.",
-    "My phone auto-corrected 'hello' to 'help,' causing immediate panic. My friend called emergency services. I tried explaining but made it worse. Now, sirens approach my house. I just wanted to say hi. Thanks, auto-correct. Truly helpful.",
-    "A seagull swooped down and stole my fries, making direct eye contact. The audacity. I had no defense. It flapped away victorious. I considered revenge but knew I’d lose. This was its world. I just lived in it."
+    "The old man sat on the wooden bench, watching the pigeons peck at scattered crumbs. He had been coming to the park every morning for years.",
+    "She carefully folded the letter and placed it in a small box. The words inside reminded her of a time long gone but never forgotten.",
+    "The wind howled through the trees, rattling the windows of the old house. Shadows danced across the walls as the candle flickered in the dark.",
+    "He struggled to finish the last chapter of his novel. The words wouldn’t come easily, but he knew he had to push through and complete it.",
+    "They walked along the quiet beach, their footprints disappearing with the waves. The scent of salt filled the air as the sun dipped below the horizon.",
+    "She placed her hands on the piano keys, hesitating for a moment. The melody she played brought back childhood memories of lessons with her grandmother.",
+    "The train rumbled down the tracks, carrying passengers to unknown destinations. Some stared out the window, lost in thought, while others quietly read books.",
+    "He held onto the photograph, running his fingers along its faded edges. It was the only thing he had left from a past he barely remembered.",
+    "The scientist adjusted his glasses and examined the results again. If his calculations were correct, he had just discovered something groundbreaking.",
+    "They gathered around the fire, sharing stories of adventure and mystery. The crackling flames cast long shadows as laughter echoed through the night.",
+    "She stood on the balcony, looking down at the busy street below. The city never slept, and she found comfort in its constant movement.",
+    "The detective studied the footprints in the mud, his mind racing with possibilities. He knew this clue could be the key to solving the case.",
+    "A storm was approaching, dark clouds rolling in over the hills. The villagers hurried to prepare, securing their homes against the heavy winds.",
+    "He stared at the chessboard, thinking several moves ahead. Each decision had consequences, and one mistake could cost him the entire game.",
+    "She stepped onto the stage, heart pounding in her chest. The audience watched in silence as she took a deep breath and began to sing.",
+    "The clock on the wall ticked loudly in the silent room. Each second that passed felt like an eternity as he waited for the news.",
+    "They packed their bags and set off on a long journey. The road ahead was uncertain, but they were ready for whatever lay ahead.",
+    "The professor wrote equations on the board, explaining complex theories. His students listened carefully, eager to understand the mysteries of the universe.",
+    "A cat sat on the windowsill, tail flicking back and forth. It watched the rain fall outside, uninterested in the world beyond the glass.",
+    "She brushed the dust off an old book and opened it carefully. The pages were yellowed, and the words told a story lost to time.",
+    "The soldiers marched in perfect formation, their boots striking the ground. The air was filled with determination as they prepared for the battle ahead.",
+    "He reached the mountain’s peak, exhausted but triumphant. The breathtaking view made every step of the grueling climb worth it.",
+    "A little girl tugged at her mother’s sleeve, pointing excitedly at the balloons. The fair was full of lights, laughter, and the scent of caramel popcorn.",
+    "She whispered a final goodbye before walking away. Some memories were too painful to carry, yet impossible to forget."
   ]
 }
 

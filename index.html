@@ -8,39 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>RapidType</h1>
-        <p class="instruction">Type the sentence(s) below correctly as fast as you can!</p>
         
-        <div class="text-box">
-            <p id="sentence"></p>
-        </div>
-
-        <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
-
-        <div class="stats">
-            <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
-            <p>🏆 Best Time: <span id="best-time">--</span> seconds</p>
-            <p>Difficulty: <span id="difficulty"></span></p>
-        </div>
-
-        <button id="start-btn">Start Over</button>
-
-        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
-            <div style="display: flex; flex-direction: row">
-                <input type="radio" id="easy" class="difficulty" name="difficulty" value="Easy"/>
-                <label for="easy">Easy</label>
-            </div>
-            <div style="display: flex; flex-direction: row">
-                <input type="radio" id="normal" class="difficulty" name="difficulty" value="Normal" checked/>
-                <label for="normal">Normal</label>
-            </div>
-            
-            <div style="display: flex; flex-direction: row">
-                <input type="radio" id="hard" class="difficulty" name="difficulty" value="Hard"/>
-                <label for="hard">Hard</label>
-            </div>
-            
-        </div>
     </div>
 
     <script src="script.js"></script>
