@@ -30,7 +30,7 @@ function generateTimed() {
 
         <div class="stats">
             <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
-            <p>🏆 Best Time: <span id="best-time">--</span> seconds</p>
+            <p>🏆 Best Time: <span id="best-time">0.00</span> seconds</p>
             <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
@@ -83,7 +83,7 @@ function generateWPM() {
 
         <div class="stats">
             <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
-            <p>🏆 Best Time: <span id="best-time">--</span> seconds</p>
+            <p>🏆 Best Time: <span id="best-time">0.00</span> seconds</p>
             <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
@@ -158,6 +158,8 @@ function generateChallenge() {
 
   document.querySelector('#highscore').textContent = highScore
 
+  document.querySelector('#timer').innerHTML = '60'
+
   addGamemodeListener()
   addTypingListener()
   addRestartListener()
@@ -231,6 +233,7 @@ function addDifficultyListener() {
   document.querySelector('.difficulty').addEventListener('change', (event) => {
       difficulty = event.target.value
       document.getElementById('difficulty').textContent = difficulty
+      console.log('Current difficulty:', difficulty);
       localStorage.setItem('difficulty', difficulty)
       restartTimer()
       getBestTime()
@@ -460,3 +463,16 @@ function resetUserInput() {
 function loadDifficulty() {
   document.getElementById('difficulty').textContent = difficulty
 }
+
+let confirmed = false
+document.getElementById('reset-btn').addEventListener('click' ,() => {
+  if (confirmed) {
+    localStorage.clear()
+    location.reload();
+
+  } else{
+      document.getElementById('reset-btn').textContent = 'Click again to confirm'
+      confirmed = true
+  }
+  
+})
