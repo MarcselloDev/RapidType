@@ -138,19 +138,9 @@ function generateChallenge() {
             <p>⏳ Time left: <span id="timer">60.00</span> seconds</p>
             <p>🎖️ Score: <span id="score">0</span></p>
             <p>🏆 High Score: <span id="highscore">0</span></p>
-            <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
         <button id="start-btn">Start Over</button>
-
-        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
-        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
-            <select class="difficulty">
-            <option value="Easy">Easy</option>
-            <option value="Normal" selected>Normal</option>
-            <option value="Hard">Hard</option>
-            </select>
-        </div>
 
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select id="game-mode">
@@ -164,15 +154,12 @@ function generateChallenge() {
   `
   document.querySelector('.container').innerHTML = html
 
-  if (difficulty) {
-    document.querySelector('.difficulty').value = difficulty
-  }
+  difficulty = 'Easy'
+
   document.querySelector('#highscore').textContent = highScore
 
-  addDifficultyListener()
   addGamemodeListener()
   addTypingListener()
-  loadDifficulty()
   addRestartListener()
 }
 
@@ -239,7 +226,6 @@ document.getElementById('user-input').addEventListener('paste', (e) => {
   e.preventDefault();
 });
 
-document.getElementById('difficulty').textContent = difficulty
 
 function addDifficultyListener() {
   document.querySelector('.difficulty').addEventListener('change', (event) => {
