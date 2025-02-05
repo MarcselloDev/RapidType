@@ -2,14 +2,18 @@ let userInput
 let isTyping = false
 let timer
 let text
+let seconds
+let stopwatch
 let difficulty = localStorage.getItem('difficulty') || 'Normal'
 let gameMode
 let generateModes = {
   Timed: generateTimed,
   WPM: generateWPM,
-  Challenge: generateChallange,
+  Challenge: generateChallenge,
   Practice: generatePractice
 }
+let score = 0
+let highScore = localStorage.getItem('highScore') || 0
 
 function generateTimed() {
   let html = ''
@@ -45,7 +49,7 @@ function generateTimed() {
             <select id="game-mode">
             <option value="Timed" selected>Timed</option>
             <option value="WPM">WPM (Coming soon)</option>
-            <option value="Challenge">Challenge (Coming soon)</option>
+            <option value="Challenge">Challenge</option>
             <option value="Practice">Practice</option>
             </select>
         </div>
@@ -65,11 +69,111 @@ function generateTimed() {
 }
 
 function generateWPM() {
-  
+  let html = ''
+  html = 
+  `
+  <h1>RapidType</h1>
+        <p class="instruction">Type the sentence(s) below correctly as fast as you can!</p>
+        
+        <div class="text-box">
+            <p id="sentence"></p>
+        </div>
+
+        <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
+
+        <div class="stats">
+            <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
+            <p>🏆 Best Time: <span id="best-time">--</span> seconds</p>
+            <p>Difficulty: <span id="difficulty"></span></p>
+        </div>
+
+        <button id="start-btn">Start Over</button>
+
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select class="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Normal" selected>Normal</option>
+            <option value="Hard">Hard</option>
+            </select>
+        </div>
+
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select id="game-mode">
+            <option value="Timed">Timed</option>
+            <option value="WPM" selected>WPM (Coming soon)</option>
+            <option value="Challenge">Challenge</option>
+            <option value="Practice">Practice</option>
+            </select>
+        </div>
+        </div>
+  `
+  document.querySelector('.container').innerHTML = html
+
+  if (difficulty) {
+    document.querySelector('.difficulty').value = difficulty
+  }
+
+  addDifficultyListener()
+  addGamemodeListener()
+  addTypingListener()
+  loadDifficulty()
+  addRestartListener()
 }
 
-function generateChallange() {
-  
+function generateChallenge() {
+  let html = ''
+  html = 
+  `
+  <h1>RapidType</h1>
+        <p class="instruction">Type as many sentences in time as you can!</p>
+        
+        <div class="text-box">
+            <p id="sentence"></p>
+        </div>
+
+        <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
+
+        <div class="stats">
+            <p>⏳ Time left: <span id="timer">60.00</span> seconds</p>
+            <p>🎖️ Score: <span id="score">0</span></p>
+            <p>🏆 High Score: <span id="highscore">0</span></p>
+            <p>Difficulty: <span id="difficulty"></span></p>
+        </div>
+
+        <button id="start-btn">Start Over</button>
+
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select class="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Normal" selected>Normal</option>
+            <option value="Hard">Hard</option>
+            </select>
+        </div>
+
+        <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
+            <select id="game-mode">
+            <option value="Timed">Timed</option>
+            <option value="WPM">WPM (Coming soon)</option>
+            <option value="Challenge" selected>Challenge</option>
+            <option value="Practice">Practice</option>
+            </select>
+        </div>
+        </div>
+  `
+  document.querySelector('.container').innerHTML = html
+
+  if (difficulty) {
+    document.querySelector('.difficulty').value = difficulty
+  }
+  document.querySelector('#highscore').textContent = highScore
+
+  addDifficultyListener()
+  addGamemodeListener()
+  addTypingListener()
+  loadDifficulty()
+  addRestartListener()
 }
 
 function generatePractice() {
@@ -77,7 +181,7 @@ function generatePractice() {
   html = 
   `
   <h1>RapidType</h1>
-        <p class="instruction">Type the sentence(s) below correctly as fast as you can!</p>
+        <p class="instruction">Practice without worrying about your score</p>
         
         <div class="text-box">
             <p id="sentence"></p>
@@ -105,7 +209,7 @@ function generatePractice() {
             <select id="game-mode">
             <option value="Timed">Timed</option>
             <option value="WPM">WPM (Coming soon)</option>
-            <option value="Challenge">Challenge (Coming soon)</option>
+            <option value="Challenge">Challenge</option>
             <option value="Practice" selected>Practice</option>
             </select>
         </div>
@@ -151,13 +255,17 @@ function addDifficultyListener() {
 
 function addGamemodeListener() {
   document.querySelector('#game-mode').addEventListener('change', (event) => {
+      if (event.target.value === 'WPM') {
+        alert("WPM mode is coming soon!")
+        return
+      }
       gameMode = event.target.value
       console.log("Game mode selected:", gameMode)
       
       if (generateModes[gameMode]) {
         generateModes[gameMode]()
       } else {
-        console.error("No generation function for game mode:", gameMode)
+        console.error("ERROR")
       }
       localStorage.setItem('gameMode', gameMode)
       restartTimer()
@@ -263,17 +371,23 @@ document.getElementById('user-input').addEventListener('input', () => {
 
   if(!isTyping) {
     isTyping = true
-    startTimer()
+    if (gameMode === 'Challenge') {
+      startCountdown()
+    } else {
+      startTimer()
+    }
   }
-  if (isTyping && userInput == text) {
+  if (isTyping && userInput == text && gameMode != "Challenge") {
     stopTimer()
+  } else if (isTyping && userInput == text && gameMode === "Challenge") {
+    score += 1
+    document.querySelector('#score').textContent = score
+    resetUserInput()
+    generateText()
   }
   
 })
 }
-
-let seconds
-let stopwatch
 
 let bestTimes = {
   Easy: localStorage.getItem('EasyBestTime') || null,
@@ -287,6 +401,25 @@ function startTimer () {
   stopwatch = setInterval(() => {
     document.querySelector('#timer').innerHTML = (seconds/100).toFixed(2)
     seconds++;
+  }, 10);
+}
+function startCountdown () {
+  console.log('Countdown Started');
+  seconds = 6000;
+  stopwatch = setInterval(() => {
+    document.querySelector('#timer').innerHTML = (seconds/100).toFixed(2)
+    seconds--;
+    if (score > highScore) {
+        highScore = score
+        localStorage.setItem('highScore', highScore)
+        document.querySelector('#highscore').textContent = highScore
+      }
+    if (seconds === 0) {
+      document.querySelector('#timer').innerHTML = ((seconds)/100).toFixed(2)
+      isTyping = false
+      generateText()
+      clearInterval(stopwatch)
+    }
   }, 10);
 }
 
