@@ -34,7 +34,10 @@ function generateTimed() {
             <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
+        <div style="display: flex; flex-direction: column; align-items: center">
         <button id="start-btn">Start Over</button>
+        <button id="reset-btn">Reset all scores</button>
+        </div>
 
         <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
@@ -66,6 +69,7 @@ function generateTimed() {
   addTypingListener()
   loadDifficulty()
   addRestartListener()
+  addResetListener()
 }
 
 function generateWPM() {
@@ -87,7 +91,10 @@ function generateWPM() {
             <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
+        <div style="display: flex; flex-direction: column; align-items: center">
         <button id="start-btn">Start Over</button>
+        <button id="reset-btn">Reset all scores</button>
+        </div>
 
         <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
@@ -119,6 +126,7 @@ function generateWPM() {
   addTypingListener()
   loadDifficulty()
   addRestartListener()
+  addResetListener()
 }
 
 function generateChallenge() {
@@ -135,12 +143,15 @@ function generateChallenge() {
         <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
 
         <div class="stats">
-            <p>⏳ Time left: <span id="timer">60.00</span> seconds</p>
+            <p>⏳ Time left: <span id="timer">60</span> seconds</p>
             <p>🎖️ Score: <span id="score">0</span></p>
             <p>🏆 High Score: <span id="highscore">0</span></p>
         </div>
 
+        <div style="display: flex; flex-direction: column; align-items: center">
         <button id="start-btn">Start Over</button>
+        <button id="reset-btn">Reset all scores</button>
+        </div>
 
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select id="game-mode">
@@ -158,11 +169,14 @@ function generateChallenge() {
 
   document.querySelector('#highscore').textContent = highScore
 
-  document.querySelector('#timer').innerHTML = '60'
+  
 
   addGamemodeListener()
   addTypingListener()
   addRestartListener()
+  addResetListener()
+
+  document.getElementById('timer').textContent = 60
 }
 
 function generatePractice() {
@@ -183,7 +197,10 @@ function generatePractice() {
             <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
+        <div style="display: flex; flex-direction: column; align-items: center">
         <button id="start-btn">Start Over</button>
+        <button id="reset-btn">Reset all scores</button>
+        </div>
 
         <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1vw">
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
@@ -215,6 +232,7 @@ function generatePractice() {
   addTypingListener()
   loadDifficulty()
   addRestartListener()
+  addResetListener()
 }
 
 function generateGameMode() {
@@ -430,7 +448,9 @@ function restartTimer() {
   clearInterval(stopwatch)
   console.log('Timer Restarted');
   isTyping = false
-  document.querySelector('#timer').innerHTML = (0).toFixed(2)
+  if (gameMode != 'Challenge') {
+      document.querySelector('#timer').innerHTML = (0).toFixed(2)
+  }
   resetUserInput()
   generateText()
   }
@@ -464,15 +484,19 @@ function loadDifficulty() {
   document.getElementById('difficulty').textContent = difficulty
 }
 
-let confirmed = false
-document.getElementById('reset-btn').addEventListener('click' ,() => {
-  if (confirmed) {
-    localStorage.clear()
-    location.reload();
-
-  } else{
-      document.getElementById('reset-btn').textContent = 'Click again to confirm'
-      confirmed = true
-  }
+function addResetListener() {
+  let confirmed = false
+  document.getElementById('reset-btn').addEventListener('click' ,() => {
+    if (confirmed) {
+      localStorage.clear()
+      document.getElementById('reset-btn').textContent = 'Reset all scores'
+      confirmed = false
+      location.reload();
   
-})
+    } else{
+        document.getElementById('reset-btn').textContent = 'Click again to confirm'
+        confirmed = true
+    }
+    
+  })
+}
