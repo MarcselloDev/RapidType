@@ -14,6 +14,11 @@ let generateModes = {
 }
 let score = 0
 let highScore = localStorage.getItem('highScore') || 0
+let words
+let wordCount
+
+let minutes
+let wpm
 
 function generateTimed() {
   let html = ''
@@ -51,7 +56,7 @@ function generateTimed() {
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select id="game-mode">
             <option value="Timed" selected>Timed</option>
-            <option value="WPM">WPM (Coming soon)</option>
+            <option value="WPM">WPM</option>
             <option value="Challenge">Challenge</option>
             <option value="Practice">Practice</option>
             </select>
@@ -86,8 +91,8 @@ function generateWPM() {
         <input type="text" id="user-input" placeholder="Start typing here..." autocomplete="off">
 
         <div class="stats">
-            <p>⏳ Time: <span id="timer">0.00</span> seconds</p>
-            <p>🏆 Best Time: <span id="best-time">0.00</span> seconds</p>
+            <p>⏳ <span title="Words Per Minute">WPM</span>: <span id="wpm">0.00</span></p>
+            <p>🏆 Highest WPM: <span id="wpmRecord">0.00</span></p>
             <p>Difficulty: <span id="difficulty"></span></p>
         </div>
 
@@ -108,7 +113,7 @@ function generateWPM() {
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select id="game-mode">
             <option value="Timed">Timed</option>
-            <option value="WPM" selected>WPM (Coming soon)</option>
+            <option value="WPM" selected>WPM</option>
             <option value="Challenge">Challenge</option>
             <option value="Practice">Practice</option>
             </select>
@@ -156,7 +161,7 @@ function generateChallenge() {
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select id="game-mode">
             <option value="Timed">Timed</option>
-            <option value="WPM">WPM (Coming soon)</option>
+            <option value="WPM">WPM</option>
             <option value="Challenge" selected>Challenge</option>
             <option value="Practice">Practice</option>
             </select>
@@ -214,7 +219,7 @@ function generatePractice() {
         <div style="margin-top: 1vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align: left">
             <select id="game-mode">
             <option value="Timed">Timed</option>
-            <option value="WPM">WPM (Coming soon)</option>
+            <option value="WPM">WPM</option>
             <option value="Challenge">Challenge</option>
             <option value="Practice" selected>Practice</option>
             </select>
@@ -262,10 +267,6 @@ function addDifficultyListener() {
 
 function addGamemodeListener() {
   document.querySelector('#game-mode').addEventListener('change', (event) => {
-      if (event.target.value === 'WPM') {
-        alert("WPM mode is coming soon!")
-        return
-      }
       gameMode = event.target.value
       console.log("Game mode selected:", gameMode)
       
@@ -380,6 +381,8 @@ document.getElementById('user-input').addEventListener('input', () => {
     isTyping = true
     if (gameMode === 'Challenge') {
       startCountdown()
+    } else if (gameMode === 'WPM') {
+      startWPM()
     } else {
       startTimer()
     }
@@ -400,6 +403,11 @@ let bestTimes = {
   Easy: localStorage.getItem('EasyBestTime') || null,
   Normal: localStorage.getItem('NormalBestTime') || null,
   Hard: localStorage.getItem('HardBestTime') || null
+}
+let bestWPMs = {
+  Easy: localStorage.getItem('EasyBestWPM') || null,
+  Normal: localStorage.getItem('NormalBestWPM') || null,
+  Hard: localStorage.getItem('HardBestWPM') || null
 }
 
 function startTimer () {
@@ -430,25 +438,61 @@ function startCountdown () {
   }, 10);
 }
 
-function stopTimer () {
-  clearInterval(stopwatch)
-  console.log('Timer Ended');
-  document.getElementById('user-input').value = ''
-  if (seconds < parseFloat(bestTimes[difficulty]) || !bestTimes[difficulty]) {
-    bestTimes[difficulty] = seconds - 1
-    setBestTime()
-    getBestTime()
-  }
+function startWPM() {
+  console.log('WPM Counter Started');
+  seconds = 0;
+  
+  stopwatch = setInterval(() => {
+    seconds++;
+    console.log(userInput);
+    updateWPM();
+  }, 200);
+}
 
-  isTyping = false
-  generateText()
+function updateWPM() {
+  words = userInput.split(' ');
+  wordCount = words.filter(word => word.length > 0).length;
+
+  minutes = seconds / 300;
+  wpm = wordCount/minutes
+
+  document.querySelector('#wpm').innerHTML = wpm.toFixed(2);
+}
+
+function stopWPM() {
+  clearInterval(stopwatch);
+  document.getElementById('user-input').value = ''
+    if (wpm > parseFloat(bestWPMs[difficulty]) || !bestWPMs[difficulty]) {
+      bestWPMs[difficulty] = wpm
+      setBestWPM()
+      getBestWPM()
+    }
+}
+
+function stopTimer () {
+  if (gameMode === 'WPM') {
+    stopWPM()
+    return
+  } else {
+    clearInterval(stopwatch)
+    console.log('Timer Ended');
+    document.getElementById('user-input').value = ''
+    if (seconds < parseFloat(bestTimes[difficulty]) || !bestTimes[difficulty]) {
+      bestTimes[difficulty] = seconds - 1
+      setBestTime()
+      getBestTime()
+    }
+
+    isTyping = false
+    generateText()
+  }
 }
 
 function restartTimer() {
   clearInterval(stopwatch)
   console.log('Timer Restarted');
   isTyping = false
-  if (gameMode != 'Challenge') {
+  if (gameMode != 'Challenge' && gameMode != 'WPM') {
       document.querySelector('#timer').innerHTML = (0).toFixed(2)
   }
   resetUserInput()
@@ -464,6 +508,9 @@ document.querySelector('#start-btn').addEventListener('click', () => {
 function setBestTime() {
   if (gameMode === 'Practice'){
     return
+  }
+  else if (gameMode === 'WPM') {
+    setBestWPM()
   } else {
     localStorage.setItem(difficulty + 'BestTime', bestTimes[difficulty])
   }
@@ -476,6 +523,17 @@ function getBestTime() {
   document.querySelector('#best-time').innerHTML = (bestTime/100).toFixed(2)
 }
 getBestTime()
+
+function setBestWPM() {
+  localStorage.setItem(difficulty + 'BestWPM', bestWPMs[difficulty])
+}
+
+function getBestWPM() {
+  let bestWPM = localStorage.getItem(difficulty + 'BestWPM');
+  if (gameMode === 'WPM')
+  document.querySelector('#wpmRecord').textContent = Number(bestWPM).toFixed(2)
+}
+getBestWPM()
 
 function resetUserInput() {
   document.querySelector('#user-input').value = ''
@@ -500,3 +558,4 @@ function addResetListener() {
     
   })
 }
+
