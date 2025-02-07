@@ -134,6 +134,7 @@ function generateWPM() {
   addRestartListener()
   addResetListener()
   addPastingListener()
+  getBestWPM()
 }
 
 function generateChallenge() {
@@ -245,7 +246,7 @@ function generatePractice() {
 }
 
 function generateGameMode() {
-  gameMode = localStorage.getItem('gameMode') || 'Timed'
+  gameMode = localStorage.getItem('gameMode') || 'WPM'
   generateModes[gameMode]()
 }
 
@@ -468,7 +469,7 @@ function stopWPM() {
       setBestWPM()
       getBestWPM()
     }
-    
+
     isTyping = false
     generateText()
 }
