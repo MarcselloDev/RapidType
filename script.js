@@ -468,6 +468,9 @@ function stopWPM() {
       setBestWPM()
       getBestWPM()
     }
+    
+    isTyping = false
+    generateText()
 }
 
 function stopTimer () {
