@@ -263,7 +263,6 @@ function addDifficultyListener() {
   document.querySelector('.difficulty').addEventListener('change', (event) => {
       difficulty = event.target.value
       document.getElementById('difficulty').textContent = difficulty
-      console.log('Current difficulty:', difficulty);
       localStorage.setItem('difficulty', difficulty)
       restartTimer()
       getBestTime()
@@ -275,7 +274,6 @@ function addDifficultyListener() {
 function addGamemodeListener() {
   document.querySelector('#game-mode').addEventListener('change', (event) => {
       gameMode = event.target.value
-      console.log("Game mode selected:", gameMode)
       
       if (generateModes[gameMode]) {
         generateModes[gameMode]()
@@ -418,7 +416,6 @@ let bestWPMs = {
 }
 
 function startTimer () {
-  console.log('Timer Started');
   seconds = 0;
   stopwatch = setInterval(() => {
     document.querySelector('#timer').innerHTML = (seconds/100).toFixed(2)
@@ -426,7 +423,6 @@ function startTimer () {
   }, 10);
 }
 function startCountdown () {
-  console.log('Countdown Started');
   seconds = 6000;
   stopwatch = setInterval(() => {
     document.querySelector('#timer').innerHTML = (seconds/100).toFixed(2)
@@ -446,12 +442,10 @@ function startCountdown () {
 }
 
 function startWPM() {
-  console.log('WPM Counter Started');
   seconds = 0;
   
   stopwatch = setInterval(() => {
     seconds++;
-    console.log(userInput);
     updateWPM();
   }, 200);
 }
@@ -482,7 +476,6 @@ function stopTimer () {
     return
   } else {
     clearInterval(stopwatch)
-    console.log('Timer Ended');
     document.getElementById('user-input').value = ''
     if (seconds < parseFloat(bestTimes[difficulty]) || !bestTimes[difficulty]) {
       bestTimes[difficulty] = seconds - 1
@@ -497,7 +490,6 @@ function stopTimer () {
 
 function restartTimer() {
   clearInterval(stopwatch)
-  console.log('Timer Restarted');
   isTyping = false
   if (gameMode != 'Challenge' && gameMode != 'WPM') {
       document.querySelector('#timer').innerHTML = (0).toFixed(2)
