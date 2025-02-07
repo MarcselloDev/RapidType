@@ -75,6 +75,7 @@ function generateTimed() {
   loadDifficulty()
   addRestartListener()
   addResetListener()
+  addPastingListener()
 }
 
 function generateWPM() {
@@ -132,6 +133,7 @@ function generateWPM() {
   loadDifficulty()
   addRestartListener()
   addResetListener()
+  addPastingListener()
 }
 
 function generateChallenge() {
@@ -180,6 +182,7 @@ function generateChallenge() {
   addTypingListener()
   addRestartListener()
   addResetListener()
+  addPastingListener()
 
   document.getElementById('timer').textContent = 60
 }
@@ -238,6 +241,7 @@ function generatePractice() {
   loadDifficulty()
   addRestartListener()
   addResetListener()
+  addPastingListener()
 }
 
 function generateGameMode() {
@@ -247,9 +251,12 @@ function generateGameMode() {
 
 generateGameMode()
 
-document.getElementById('user-input').addEventListener('paste', (e) => {
-  e.preventDefault();
-});
+function addPastingListener() {
+  document.getElementById('user-input').addEventListener('paste', (e) => {
+    e.preventDefault();
+  });
+}
+
 
 
 function addDifficultyListener() {
