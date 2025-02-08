@@ -3,8 +3,6 @@
 
 A simple typing game made in JavaScript.
 
-![App Screenshot](https://i.ibb.co/yFSBDkr8/Rapid-Type-README.png)
-
 
 ## Features
 
