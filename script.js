@@ -267,6 +267,7 @@ function addDifficultyListener() {
       localStorage.setItem('difficulty', difficulty)
       restartTimer()
       getBestTime()
+      getBestWPM()
   });
 }
 
