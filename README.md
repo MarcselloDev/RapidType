@@ -3,6 +3,8 @@
 
 A simple typing game made in JavaScript.
 
+![App Screenshot](https://i.ibb.co/WvBWbG0n/Screenshot-2025-02-14-230722.png)
+
 
 ## Features
 
